@@ -1,0 +1,351 @@
+create database student;
+use student;
+CREATE TABLE StudentCareer (
+Student_ID INT PRIMARY KEY,
+Student_Name VARCHAR(50),
+Age INT,
+Gender VARCHAR(10),
+Qualification VARCHAR(50),
+Department VARCHAR(50),
+CGPA DECIMAL(3,2),
+Backlogs INT,
+Experience_Years DECIMAL(3,1),
+Internships INT,
+Hobby VARCHAR(50),
+Interest VARCHAR(50),
+Field_of_Interest VARCHAR(50),
+Job_Goal VARCHAR(50),
+Preferred_Location VARCHAR(30),
+Expected_Salary INT,
+Preferred_Company_Type VARCHAR(30),
+Preferred_Work_Mode VARCHAR(20),
+Subject_Knowledge VARCHAR(20),
+Programming_Skill VARCHAR(20),
+Communication_Skill VARCHAR(20),
+Leadership_Skill VARCHAR(20),
+Certifications INT,
+LinkedIn_Profile VARCHAR(5),
+Hackathon_Participation VARCHAR(5),
+English_Proficiency VARCHAR(20),
+Placement_Status VARCHAR(20)
+);
+
+#Q1. Display all student details
+SELECT *
+FROM StudentCareer;
+
+#Q2. Display Student Name and CGPA
+SELECT Student_Name, CGPA
+FROM StudentCareer;
+
+#Q3. Display unique departments
+SELECT DISTINCT Department
+FROM StudentCareer;
+
+#Q4. CGPA greater than 8
+SELECT *
+FROM StudentCareer
+WHERE CGPA > 8;
+
+#Q5. Expected salary greater than ₹10,00,000
+SELECT *
+FROM StudentCareer
+WHERE Expected_Salary > 1000000;
+
+#Q6. Already placed students
+SELECT *
+FROM StudentCareer
+WHERE Placement_Status = 'Placed';
+
+#Q7. Age between 20 and 25
+SELECT *
+FROM StudentCareer
+WHERE Age BETWEEN 20 AND 25;
+
+#Q8. CGPA between 7 and 9
+SELECT *
+FROM StudentCareer
+WHERE CGPA BETWEEN 7 AND 9;
+
+#Q9. Qualification MBA or MCA
+SELECT *
+FROM StudentCareer
+WHERE Qualification IN ('MBA','MCA');
+
+#Q10. Interest in AI, Data Science or HR Analytics
+SELECT *
+FROM StudentCareer
+WHERE Interest IN ('Artificial Intelligence','Data Science','HR Analytics');
+
+#Q11. Name starts with A
+SELECT *
+FROM StudentCareer
+WHERE Student_Name LIKE 'A%';
+
+#Q12. Name ends with a
+SELECT *
+FROM StudentCareer
+WHERE Student_Name LIKE '%a';
+
+#Q13. Name contains "ra"
+SELECT *
+FROM StudentCareer
+WHERE Student_Name LIKE '%ra%';
+
+#Q14. CGPA descending
+SELECT *
+FROM StudentCareer
+ORDER BY CGPA DESC;
+
+#Q15. Salary ascending
+SELECT *
+FROM StudentCareer
+ORDER BY Expected_Salary ASC;
+
+#Q16. Top 5 highest salary
+SELECT *
+FROM StudentCareer
+ORDER BY Expected_Salary DESC
+LIMIT 5;
+
+#Q17. Top 3 CGPA
+SELECT *
+FROM StudentCareer
+ORDER BY CGPA DESC
+LIMIT 3;
+
+
+#Q18. Count students
+SELECT COUNT(*) AS TotalStudents
+FROM StudentCareer;
+
+#Q19. Average CGPA
+SELECT ROUND(AVG(CGPA),2) AS AverageCGPA
+FROM StudentCareer;
+
+#Q20. Maximum salary
+SELECT MAX(Expected_Salary) AS MaximumSalary
+FROM StudentCareer;
+
+#Q21. Minimum salary
+SELECT MIN(Expected_Salary) AS MinimumSalary
+FROM StudentCareer;
+
+#Q22. Total internships
+SELECT SUM(Internships) AS TotalInternships
+FROM StudentCareer;
+
+#Q23. Students in each department
+SELECT Department, COUNT(*) AS TotalStudents
+FROM StudentCareer
+GROUP BY Department;
+
+#Q24. Average CGPA by department
+SELECT Department,
+ROUND(AVG(CGPA),2) AS AverageCGPA
+FROM StudentCareer
+GROUP BY Department;
+
+#Q25. Average salary by job goal
+SELECT Job_Goal,
+ROUND(AVG(Expected_Salary),2) AS AverageSalary
+FROM StudentCareer
+GROUP BY Job_Goal;
+
+#Q26. Male and female count
+SELECT Gender,
+COUNT(*) AS TotalStudents
+FROM StudentCareer
+GROUP BY Gender;
+
+#Q27. Count by placement status
+SELECT Placement_Status,
+COUNT(*) AS TotalStudents
+FROM StudentCareer
+GROUP BY Placement_Status;
+
+#Q28. Departments having more than 10 students
+SELECT Department,
+COUNT(*) AS TotalStudents
+FROM StudentCareer
+GROUP BY Department
+HAVING COUNT(*) > 10;
+
+#Q29. Job goals with average salary > ₹12,00,000
+SELECT Job_Goal,
+AVG(Expected_Salary) AS AverageSalary
+FROM StudentCareer
+GROUP BY Job_Goal
+HAVING AVG(Expected_Salary) > 1200000;
+
+#Q30. CGPA Category
+SELECT Student_Name,
+CGPA,
+CASE
+WHEN CGPA < 6 THEN 'Poor'
+WHEN CGPA BETWEEN 6 AND 8 THEN 'Average'
+ELSE 'Excellent'
+END AS CGPA_Category
+FROM StudentCareer;
+
+#Q31. Experience Category
+SELECT Student_Name,
+Experience_Years,
+CASE
+WHEN Experience_Years = 0 THEN 'Fresher'
+WHEN Experience_Years <= 1 THEN 'Junior'
+ELSE 'Experienced'
+END AS Experience_Level
+FROM StudentCareer;
+
+#Q32. Salary Category
+SELECT Student_Name,
+Expected_Salary,
+CASE
+WHEN Expected_Salary < 700000 THEN 'Low'
+WHEN Expected_Salary <= 1200000 THEN 'Medium'
+ELSE 'High'
+END AS Salary_Level
+FROM StudentCareer;
+
+#Q33. Row number by CGPA
+SELECT Student_Name,
+CGPA,
+ROW_NUMBER() OVER(ORDER BY CGPA DESC) AS RowNo
+FROM StudentCareer;
+
+#Q34. Row number within department
+SELECT Student_Name,
+Department,
+CGPA,
+ROW_NUMBER() OVER(PARTITION BY Department ORDER BY CGPA DESC) AS RowNo
+FROM StudentCareer;
+
+#Q35. Rank by CGPA
+SELECT Student_Name,
+CGPA,
+RANK() OVER(ORDER BY CGPA DESC) AS RankNo
+FROM StudentCareer;
+
+#Q36. Rank by Salary
+SELECT Student_Name,
+Expected_Salary,
+RANK() OVER(ORDER BY Expected_Salary DESC) AS RankNo
+FROM StudentCareer;
+
+#Q37. CGPA above average
+WITH AvgCGPA AS
+(
+SELECT AVG(CGPA) AS AvgValue
+FROM StudentCareer
+)
+SELECT *
+FROM StudentCareer, AvgCGPA
+WHERE CGPA > AvgValue;
+
+#Q38. Top 5 salary
+WITH SalaryRank AS
+(
+SELECT *
+FROM StudentCareer
+ORDER BY Expected_Salary DESC
+LIMIT 5
+)
+SELECT *
+FROM SalaryRank;
+
+#Q39. Highest salary student
+SELECT *
+FROM StudentCareer
+WHERE Expected_Salary =
+(
+SELECT MAX(Expected_Salary)
+FROM StudentCareer
+);
+
+#Q40. CGPA above average
+SELECT *
+FROM StudentCareer
+WHERE CGPA >
+(
+SELECT AVG(CGPA)
+FROM StudentCareer
+);
+
+#Q41. Second highest salary
+SELECT MAX(Expected_Salary) AS SecondHighestSalary
+FROM StudentCareer
+WHERE Expected_Salary <
+(
+SELECT MAX(Expected_Salary)
+FROM StudentCareer
+);
+
+#Q42. Most popular hobby
+SELECT Hobby,
+COUNT(*) AS TotalStudents
+FROM StudentCareer
+GROUP BY Hobby
+ORDER BY TotalStudents DESC
+LIMIT 1;
+
+#Q43. Most popular job goal
+SELECT Job_Goal,
+COUNT(*) AS TotalStudents
+FROM StudentCareer
+GROUP BY Job_Goal
+ORDER BY TotalStudents DESC
+LIMIT 1;
+
+#Q44. Most preferred location
+SELECT Preferred_Location,
+COUNT(*) AS TotalStudents
+FROM StudentCareer
+GROUP BY Preferred_Location
+ORDER BY TotalStudents DESC
+LIMIT 1;
+
+#Q45. Department with highest average CGPA
+SELECT Department,
+AVG(CGPA) AS AverageCGPA
+FROM StudentCareer
+GROUP BY Department
+ORDER BY AverageCGPA DESC
+LIMIT 1;
+
+#Q46. Students with more than 2 certifications
+SELECT *
+FROM StudentCareer
+WHERE Certifications > 2;
+
+#Q47. AI interest + Advanced programming
+SELECT *
+FROM StudentCareer
+WHERE Interest='Artificial Intelligence'
+AND Programming_Skill='Advanced';
+
+#Q48. LinkedIn and Hackathon participation
+SELECT *
+FROM StudentCareer
+WHERE LinkedIn_Profile='Yes'
+AND Hackathon_Participation='Yes';
+
+#Q49. Top 5 by internships
+SELECT *
+FROM StudentCareer
+ORDER BY Internships DESC
+LIMIT 5;
+
+#Q50. Salary greater than department average
+SELECT
+Student_ID,
+Student_Name,
+Department,
+Expected_Salary
+FROM StudentCareer s1
+WHERE Expected_Salary >
+(
+SELECT AVG(Expected_Salary)
+FROM StudentCareer s2
+WHERE s1.Department = s2.Department
+);
